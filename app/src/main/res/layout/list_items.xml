@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginBottom="@dimen/activity_horizontal_margin"
     android:layout_marginEnd="@dimen/activity_vertical_margin"
     android:layout_marginStart="@dimen/activity_vertical_margin"
     android:layout_marginTop="@dimen/activity_horizontal_margin"
+    android:clickable="false"
     android:longClickable="true"
     android:orientation="horizontal">
 
@@ -21,16 +23,20 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:contextClickable="true"
             android:text="TextView"
-            android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            tools:ignore="HardcodedText,NestedWeights" />
 
         <TextView
             android:id="@+id/list_items_text_trans"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:contextClickable="true"
             android:text="TextView"
-            android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            tools:ignore="HardcodedText" />
     </LinearLayout>
 
     <ImageButton
@@ -38,6 +44,8 @@
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"
-        app:srcCompat="@android:drawable/ic_media_play" />
+        android:background="@android:color/transparent"
+        app:srcCompat="@android:drawable/ic_media_play"
+        tools:ignore="ContentDescription" />
 
 </LinearLayout>
