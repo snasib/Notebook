@@ -3,32 +3,41 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="@dimen/activity_vertical_margin"
-    android:layout_marginLeft="@dimen/activity_horizontal_margin"
-    android:layout_marginRight="@dimen/activity_vertical_margin"
-    android:layout_marginTop="@dimen/activity_vertical_margin">
+    android:layout_marginBottom="@dimen/activity_horizontal_margin"
+    android:layout_marginEnd="@dimen/activity_vertical_margin"
+    android:layout_marginStart="@dimen/activity_vertical_margin"
+    android:layout_marginTop="@dimen/activity_horizontal_margin"
+    android:orientation="horizontal">
 
-    <TextView
-        android:id="@+id/list_items_text_word"
+    <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="5"
-        android:text="TextView"
-        android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+        android:layout_weight="10"
+        android:orientation="horizontal">
 
-    <TextView
-        android:id="@+id/list_items_text_trans"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="5"
-        android:text="TextView"
-        android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+        <TextView
+            android:id="@+id/list_items_text_word"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="TextView"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+
+        <TextView
+            android:id="@+id/list_items_text_trans"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="TextView"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+    </LinearLayout>
 
     <ImageButton
         android:id="@+id/list_items_button_play"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"
+        android:contentDescription="TODO"
         app:srcCompat="@android:drawable/ic_media_play" />
 
 </LinearLayout>
