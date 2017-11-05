@@ -125,14 +125,17 @@ public class EditorActivity extends AppCompatActivity {
                 && TextUtils.isEmpty(trans)) {
             Toast.makeText(this, R.string.editor_activity_no_data, Toast.LENGTH_SHORT).show();
             finish();
+            return;
         }
         if (TextUtils.isEmpty(word)) {
             Toast.makeText(this, R.string.editor_activity_need_word, Toast.LENGTH_SHORT).show();
             finish();
+            return;
         }
         if (TextUtils.isEmpty(trans)) {
             Toast.makeText(this, R.string.editor_activity_need_trans, Toast.LENGTH_SHORT).show();
             finish();
+            return;
         }
 
         ContentValues values = new ContentValues();
