@@ -29,7 +29,7 @@ public class NotebookProvider extends ContentProvider {
 
     static {
         sUriMatcher.addURI(CONTENT_AUTHORITY, PATH_WORD, WORDS);
-        sUriMatcher.addURI(CONTENT_AUTHORITY, PATH_WORD + "/#", WORDS);
+        sUriMatcher.addURI(CONTENT_AUTHORITY, PATH_WORD + "/#", WORD_ID);
     }
 
     private NotebookDbHelper mDbHelper;
@@ -73,6 +73,7 @@ public class NotebookProvider extends ContentProvider {
                         null,
                         sortOrder
                 );
+                break;
             default:
                 throw new IllegalArgumentException("Cannot query unknown URI" + uri);
         }
@@ -140,6 +141,7 @@ public class NotebookProvider extends ContentProvider {
         Log.i(TAG, "delete: " + uri.toString());
         SQLiteDatabase db = mDbHelper.getWritableDatabase();
         final int match = sUriMatcher.match(uri);
+        Log.i(TAG, "delete: " + match);
         switch (match) {
             case WORDS:
                 int id = db.delete(NotebookEntry.TABLE_NAME, selection, selectionArgs);
