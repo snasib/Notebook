@@ -1,0 +1,18 @@
+<resources>
+    <string name="app_name">Notebook</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Notebook</string>
+    <string name="nav_header_subtitle">Help you to learn new words</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Settings</string>
+
+    <string name="empty_view_subtitle_text">Press the button to add new word</string>
+    <string name="empty_view_title_text">Your word list is empty</string>
+    <string name="empty_view_image_desc">Image for empty view</string>
+    <string name="menu_drawer_tools">Tools</string>
+    <string name="menu_drawer_communicate">Communicate</string>
+    <string name="menu_drawer_share">Share</string>
+    <string name="menu_drawer_send">Send</string>
+</resources>
