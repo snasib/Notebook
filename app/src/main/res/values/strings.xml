@@ -15,4 +15,6 @@
     <string name="menu_drawer_communicate">Communicate</string>
     <string name="menu_drawer_share">Share</string>
     <string name="menu_drawer_send">Send</string>
+    <string name="action_add">Add new word</string>
+    <string name="action_delete_all">Delete all words</string>
 </resources>
