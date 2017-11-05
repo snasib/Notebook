@@ -29,7 +29,7 @@
     <string name="unsaved_changes_dialog_discard">Discard</string>
     <string name="unsaved_changes_dialog_title">Confirm</string>
     <string name="action_editor_save">Save</string>
-    <string name="delete_confirm_dialog_title">Confirm word delete</string>
+    <string name="delete_confirm_dialog_title">Confirm</string>
     <string name="delete_confirm_dialog_msg">Are you sure to delete this word?</string>
     <string name="delete_confirm_dialog_delete">Delete</string>
     <string name="delete_confirm_dialog_cancel">Cancel</string>
@@ -42,4 +42,9 @@
     <string name="editor_activity_update_succ">Update successful</string>
     <string name="editor_activity_delete_failed">Deletion failed</string>
     <string name="editor_activity_delete_succ">Deletion successful</string>
+    <string name="main_activity_list_already_empty">Word list is already empty</string>
+    <string name="delete_all_words_dialog_title">Warning! Be careful!</string>
+    <string name="delete_all_words_dialog_msg">This action will delete all words. Are you sure to continue?</string>
+    <string name="delete_all_words_dialog_positive">Yes</string>
+    <string name="delete_all_words_dialog_negative">Cancel</string>
 </resources>
