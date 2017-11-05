@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    app:layout_scrollFlags="scroll|enterAlways"
     tools:context=".MainActivity">
 
     <android.support.design.widget.AppBarLayout
@@ -59,7 +60,10 @@
     <ListView
         android:id="@+id/listView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_marginTop="54dp"
+        android:padding="@dimen/activity_all_padding" />
+
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"
@@ -69,5 +73,6 @@
         android:layout_margin="@dimen/fab_margin"
         android:tint="@android:color/white"
         app:srcCompat="@android:drawable/ic_input_add" />
+
 
 </android.support.design.widget.CoordinatorLayout>
