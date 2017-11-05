@@ -25,7 +25,9 @@
             android:authorities="com.sadinasib.notebook"
             android:exported="false" />
 
-        <activity android:name=".EditorActivity"></activity>
+        <activity
+            android:name=".EditorActivity"
+            android:parentActivityName=".MainActivity" />
     </application>
 
 </manifest>
