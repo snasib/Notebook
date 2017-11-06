@@ -24,6 +24,7 @@ public final class NotebookContract {
         public static final String _ID = BaseColumns._ID;
         public static final String COLUMN_WORD = "word";
         public static final String COLUMN_TRANSLATION = "translation";
+        public static final String SORT_ORDER = COLUMN_WORD + " ASC";
 
         public static final String CONTENT_LIST_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_WORD;
         public static final String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_WORD;

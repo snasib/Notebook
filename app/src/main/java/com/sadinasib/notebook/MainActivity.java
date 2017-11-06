@@ -211,7 +211,7 @@ public class MainActivity
                 projection,
                 null,
                 null,
-                null);
+                NotebookEntry.SORT_ORDER);
     }
 
     @Override
