@@ -75,5 +75,5 @@ public class NotebookAdapter extends CursorAdapter {
             }
         });
     }
-    
+
 }

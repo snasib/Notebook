@@ -36,9 +36,11 @@ import com.sadinasib.notebook.data.NotebookContract;
 
 import static com.sadinasib.notebook.data.NotebookContract.*;
 
-public class MainActivity extends AppCompatActivity
+public class MainActivity
+        extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener
-        , LoaderManager.LoaderCallbacks<Cursor> {
+        , LoaderManager.LoaderCallbacks<Cursor>
+        , AdapterView.OnItemLongClickListener{
     private static final String TAG = MainActivity.class.getSimpleName();
     private static final int INVENTORY_LOADER_ID = 35;
 
@@ -73,17 +75,10 @@ public class MainActivity extends AppCompatActivity
         mListView = (ListView) findViewById(R.id.listView);
         View emptyView = findViewById(R.id.empty_view);
         mListView.setEmptyView(emptyView);
-
         mAdapter = new NotebookAdapter(this, null);
         mListView.setAdapter(mAdapter);
+        mListView.setOnItemLongClickListener(this);
 
-        mListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int position, long id) {
-                showPopup(view, id);
-                return true;
-            }
-        });
         getLoaderManager().initLoader(INVENTORY_LOADER_ID, null, this);
     }
 
@@ -232,4 +227,9 @@ public class MainActivity extends AppCompatActivity
     }
 
 
+    @Override
+    public boolean onItemLongClick(AdapterView<?> adapterView, View view, int position, long id) {
+        showPopup(view, id);
+        return true;
+    }
 }
