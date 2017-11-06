@@ -47,4 +47,10 @@
     <string name="delete_all_words_dialog_msg">This action will delete all words. Are you sure to continue?</string>
     <string name="delete_all_words_dialog_positive">Yes</string>
     <string name="delete_all_words_dialog_negative">Cancel</string>
+    <string name="action_popup_edit">Edit</string>
+    <string name="action_popup_delete">Delete</string>
+    <string name="action_popup_share">Share</string>
+    <string name="action_popup_export">Export</string>
+    <string name="main_activity_update_failed">Deletion failed</string>
+    <string name="main_activity_update_succ">Deletion successful</string>
 </resources>

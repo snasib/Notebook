@@ -16,6 +16,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.util.Log;
+import android.view.MenuInflater;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -27,6 +28,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.PopupMenu;
 import android.widget.Toast;
 
 import com.sadinasib.notebook.adapter.NotebookAdapter;
@@ -78,15 +80,41 @@ public class MainActivity extends AppCompatActivity
         mListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> adapterView, View view, int position, long id) {
-                Intent editIntent = new Intent(MainActivity.this, EditorActivity.class);
-                Uri currentProductUri = ContentUris.withAppendedId(NotebookEntry.CONTENT_URI, id);
-                editIntent.setData(currentProductUri);
-                startActivity(editIntent);
+                showPopup(view, id);
                 return true;
             }
         });
         getLoaderManager().initLoader(INVENTORY_LOADER_ID, null, this);
     }
+
+    private void showPopup(View view, final long id) {
+        Log.i(TAG, "showPopup");
+        PopupMenu popupMenu = new PopupMenu(this, view);
+        MenuInflater inflater = popupMenu.getMenuInflater();
+        inflater.inflate(R.menu.menu_popup, popupMenu.getMenu());
+        final Uri currentProductUri = ContentUris.withAppendedId(NotebookEntry.CONTENT_URI, id);
+        popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem menuItem) {
+                int itemId = menuItem.getItemId();
+                switch (itemId) {
+                    case R.id.action_popup_edit:
+                        Intent editIntent = new Intent(MainActivity.this, EditorActivity.class);
+                        editIntent.setData(currentProductUri);
+                        startActivity(editIntent);
+                        return true;
+                    case R.id.action_popup_delete:
+                        deleteSingleWord(currentProductUri);
+                        return true;
+                    case R.id.action_popup_share:
+                        return true;
+                }
+                return false;
+            }
+        });
+        popupMenu.show();
+    }
+
 
     @Override
     public void onBackPressed() {
@@ -97,6 +125,8 @@ public class MainActivity extends AppCompatActivity
             super.onBackPressed();
         }
     }
+
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -119,6 +149,19 @@ public class MainActivity extends AppCompatActivity
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+
+    private void deleteSingleWord(Uri uri) {
+        Log.i(TAG, "deleteSingleWord");
+        int rowId = getContentResolver().delete(uri, null, null);
+        if (rowId == 0) {
+            Log.e(TAG, "deleteSingleWord failed for uri " + uri.toString());
+            Toast.makeText(this, R.string.main_activity_update_failed, Toast.LENGTH_SHORT).show();
+        } else {
+
+            Toast.makeText(this, R.string.main_activity_update_succ, Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void deleteAllWords() {
@@ -187,4 +230,6 @@ public class MainActivity extends AppCompatActivity
         Log.i(TAG, "onLoaderReset: ");
         mAdapter.swapCursor(null);
     }
+
+
 }
