@@ -73,6 +73,7 @@ public class MainActivity extends AppCompatActivity
 
         mAdapter = new NotebookAdapter(this, null);
         mListView.setAdapter(mAdapter);
+        mListView.setItemsCanFocus(true);
 
         mListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override

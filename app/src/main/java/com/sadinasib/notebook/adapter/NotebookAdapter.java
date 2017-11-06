@@ -6,7 +6,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CursorAdapter;
+import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.sadinasib.notebook.R;
 
@@ -32,7 +34,7 @@ public class NotebookAdapter extends CursorAdapter {
     public void bindView(View view, final Context context, Cursor cursor) {
         final long row_id = cursor.getLong(cursor.getColumnIndex(NotebookEntry._ID));
 
-        TextView tvWord = (TextView) view.findViewById(R.id.list_items_text_word);
+        final TextView tvWord = (TextView) view.findViewById(R.id.list_items_text_word);
         TextView tvTrans = (TextView) view.findViewById(R.id.list_items_text_trans);
 
         String word = cursor.getString(cursor.getColumnIndexOrThrow(NotebookEntry.COLUMN_WORD));
@@ -41,6 +43,4 @@ public class NotebookAdapter extends CursorAdapter {
         tvWord.setText(word);
         tvTrans.setText(trans);
     }
-
-
 }
