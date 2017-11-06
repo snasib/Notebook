@@ -11,6 +11,7 @@ import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.speech.tts.TextToSpeech;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -73,7 +74,6 @@ public class MainActivity extends AppCompatActivity
 
         mAdapter = new NotebookAdapter(this, null);
         mListView.setAdapter(mAdapter);
-        mListView.setItemsCanFocus(true);
 
         mListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
