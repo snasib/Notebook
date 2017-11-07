@@ -1,10 +1,12 @@
 package com.sadinasib.notebook;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
@@ -99,7 +101,7 @@ public class EditorActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.action_editor_save:
                 saveWord();
-                finish();
+                //finish();
                 return true;
             case R.id.action_editor_delete:
                 showDeleteConfirmationDialog();
@@ -138,6 +140,11 @@ public class EditorActivity extends AppCompatActivity {
             return;
         }
 
+        if (isExist(word, trans)) {
+            Toast.makeText(this, "Entered word already exists", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         ContentValues values = new ContentValues();
         values.put(NotebookEntry.COLUMN_WORD, word);
         values.put(NotebookEntry.COLUMN_TRANSLATION, trans);
@@ -148,6 +155,7 @@ public class EditorActivity extends AppCompatActivity {
                 Log.e(TAG, "saveWord failed for uri " + mWordUri.toString());
                 Toast.makeText(this, R.string.editor_activity_save_failed, Toast.LENGTH_SHORT).show();
             } else {
+                Toast.makeText(this, "zero add" + newUri.toString(), Toast.LENGTH_SHORT).show();
                 Toast.makeText(this, R.string.editor_activity_save_succ, Toast.LENGTH_SHORT).show();
             }
         } else {
@@ -159,6 +167,21 @@ public class EditorActivity extends AppCompatActivity {
                 Toast.makeText(this, R.string.editor_activity_update_succ, Toast.LENGTH_SHORT).show();
             }
         }
+    }
+
+    private boolean isExist(String word, String trans) {
+        String[] projection = {NotebookEntry._ID};
+        String selection = NotebookEntry.COLUMN_WORD + "=? OR " + NotebookEntry.COLUMN_TRANSLATION + " =?";
+        String[] selectionArgs = new String[]{word, trans};
+        @SuppressLint("Recycle")
+        Cursor cursor = getContentResolver().query(
+                NotebookEntry.CONTENT_URI,
+                projection,
+                selection,
+                selectionArgs,
+                null
+        );
+        return cursor != null && cursor.getCount() > 0;
     }
 
     private void deleteWord() {
