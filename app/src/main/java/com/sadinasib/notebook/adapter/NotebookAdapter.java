@@ -7,9 +7,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AlphabetIndexer;
 import android.widget.CursorAdapter;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.SectionIndexer;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -23,12 +25,15 @@ import static com.sadinasib.notebook.data.NotebookContract.NotebookEntry;
  * Created by sadin on 05-Nov-17.
  */
 
-public class NotebookAdapter extends CursorAdapter {
+public class NotebookAdapter
+        extends CursorAdapter
+        implements SectionIndexer {
     private static final String TAG = NotebookAdapter.class.getSimpleName();
     private TextToSpeech mTextToSpeech;
+    private AlphabetIndexer mAlphabetIndexer;
 
-    public NotebookAdapter(Context context, Cursor c) {
-        super(context, c, 0);
+    public NotebookAdapter(Context context, Cursor cursor) {
+        super(context, cursor, 0);
     }
 
     @Override
@@ -58,6 +63,24 @@ public class NotebookAdapter extends CursorAdapter {
         });
     }
 
+    @Override
+    public Cursor swapCursor(Cursor newCursor) {
+        if (newCursor != null) {
+            final String alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+            mAlphabetIndexer = new AlphabetIndexer(newCursor, newCursor.getColumnIndex(NotebookEntry.COLUMN_WORD), alphabet);
+            mAlphabetIndexer.setCursor(newCursor);
+        }
+        return super.swapCursor(newCursor);
+    }
+
+    @Override
+    public int getCount() {
+        if (getCursor() == null) {
+            return 0;
+        }
+        return super.getCount();
+    }
+
     private void speak(Context context, final String word) {
         mTextToSpeech = new TextToSpeech(context, new TextToSpeech.OnInitListener() {
             @Override
@@ -76,4 +99,18 @@ public class NotebookAdapter extends CursorAdapter {
         });
     }
 
+    @Override
+    public Object[] getSections() {
+        return mAlphabetIndexer.getSections();
+    }
+
+    @Override
+    public int getPositionForSection(int sectionIndex) {
+        return mAlphabetIndexer.getPositionForSection(sectionIndex);
+    }
+
+    @Override
+    public int getSectionForPosition(int position) {
+        return mAlphabetIndexer.getSectionForPosition(position);
+    }
 }
