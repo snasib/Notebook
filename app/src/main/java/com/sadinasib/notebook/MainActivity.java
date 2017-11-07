@@ -11,42 +11,44 @@ import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.speech.tts.TextToSpeech;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.util.Log;
-import android.view.MenuInflater;
-import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
+import android.widget.FilterQueryProvider;
 import android.widget.ListView;
 import android.widget.PopupMenu;
+import android.widget.SearchView;
 import android.widget.Toast;
 
 import com.sadinasib.notebook.adapter.NotebookAdapter;
-import com.sadinasib.notebook.data.NotebookContract;
 
-import static com.sadinasib.notebook.data.NotebookContract.*;
+import static com.sadinasib.notebook.data.NotebookContract.NotebookEntry;
 
 public class MainActivity
         extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener
         , LoaderManager.LoaderCallbacks<Cursor>
-        , AdapterView.OnItemLongClickListener{
+        , AdapterView.OnItemLongClickListener
+        , SearchView.OnQueryTextListener, FilterQueryProvider {
     private static final String TAG = MainActivity.class.getSimpleName();
     private static final int INVENTORY_LOADER_ID = 35;
 
     private NotebookAdapter mAdapter;
     private ListView mListView;
+    private SearchView mSearchView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,6 +79,7 @@ public class MainActivity
         View emptyView = findViewById(R.id.empty_view);
         mListView.setEmptyView(emptyView);
         mAdapter = new NotebookAdapter(this, null);
+        mAdapter.setFilterQueryProvider(this);
         mListView.setAdapter(mAdapter);
         mListView.setOnItemLongClickListener(this);
         mListView.setOnScrollListener(new AbsListView.OnScrollListener() {
@@ -127,22 +130,29 @@ public class MainActivity
         popupMenu.show();
     }
 
-
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
         }
+        super.onBackPressed();
     }
-
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
+
+        mSearchView = (SearchView) menu.findItem(R.id.search).getActionView();
+        mSearchView.setOnQueryTextListener(this);
+        mSearchView.setOnCloseListener(new SearchView.OnCloseListener() {
+            @Override
+            public boolean onClose() {
+                mAdapter.getFilter().filter(null);
+                return false;
+            }
+        });
+
         return true;
     }
 
@@ -162,7 +172,6 @@ public class MainActivity
         }
         return super.onOptionsItemSelected(item);
     }
-
 
     private void deleteSingleWord(Uri uri) {
         Log.i(TAG, "deleteSingleWord");
@@ -243,10 +252,51 @@ public class MainActivity
         mAdapter.swapCursor(null);
     }
 
-
     @Override
     public boolean onItemLongClick(AdapterView<?> adapterView, View view, int position, long id) {
         showPopup(view, id);
         return true;
+    }
+
+    @Override
+    public boolean onQueryTextSubmit(String s) {
+        return false;
+    }
+
+    @Override
+    public boolean onQueryTextChange(String s) {
+        mAdapter.getFilter().filter(s);
+        return false;
+    }
+
+    @Override
+    public Cursor runQuery(CharSequence charSequence) {
+
+        if (charSequence == null || TextUtils.isEmpty(charSequence)) {
+            return getContentResolver().query(
+                    NotebookEntry.CONTENT_URI,
+                    new String[]{"*"},
+                    null,
+                    null,
+                    NotebookEntry.SORT_ORDER
+            );
+        }
+
+        String[] projection = {
+                NotebookEntry._ID,
+                NotebookEntry.COLUMN_WORD,
+                NotebookEntry.COLUMN_TRANSLATION};
+        String selection = NotebookEntry.COLUMN_WORD + " LIKE ?";
+        String[] selectionArgs = new String[]{"%" + String.valueOf(charSequence) + "%"};
+
+        @SuppressLint("Recycle")
+        Cursor cursor = getContentResolver().query(
+                NotebookEntry.CONTENT_URI,
+                projection,
+                selection,
+                selectionArgs,
+                null,
+                null);
+        return cursor;
     }
 }
