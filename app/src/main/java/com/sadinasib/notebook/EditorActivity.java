@@ -101,7 +101,7 @@ public class EditorActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.action_editor_save:
                 saveWord();
-                //finish();
+                finish();
                 return true;
             case R.id.action_editor_delete:
                 showDeleteConfirmationDialog();
@@ -140,9 +140,11 @@ public class EditorActivity extends AppCompatActivity {
             return;
         }
 
-        if (isExist(word, trans)) {
-            Toast.makeText(this, "Entered word already exists", Toast.LENGTH_SHORT).show();
-            return;
+        if (mWordUri == null) {
+            if (isExist(word, trans)) {
+                Toast.makeText(this, "Entered word already exists", Toast.LENGTH_SHORT).show();
+                return;
+            }
         }
 
         ContentValues values = new ContentValues();
@@ -155,7 +157,6 @@ public class EditorActivity extends AppCompatActivity {
                 Log.e(TAG, "saveWord failed for uri " + mWordUri.toString());
                 Toast.makeText(this, R.string.editor_activity_save_failed, Toast.LENGTH_SHORT).show();
             } else {
-                Toast.makeText(this, "zero add" + newUri.toString(), Toast.LENGTH_SHORT).show();
                 Toast.makeText(this, R.string.editor_activity_save_succ, Toast.LENGTH_SHORT).show();
             }
         } else {
