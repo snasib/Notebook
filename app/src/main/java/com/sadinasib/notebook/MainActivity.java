@@ -3,7 +3,10 @@ package com.sadinasib.notebook;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.LoaderManager;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.ContentUris;
+import android.content.Context;
 import android.content.CursorLoader;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -48,7 +51,6 @@ public class MainActivity
 
     private NotebookAdapter mAdapter;
     private ListView mListView;
-    private SearchView mSearchView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,7 +104,7 @@ public class MainActivity
         getLoaderManager().initLoader(INVENTORY_LOADER_ID, null, this);
     }
 
-    private void showPopup(View view, final long id) {
+    private void showPopup(final View view, final long id) {
         Log.i(TAG, "showPopup");
         PopupMenu popupMenu = new PopupMenu(this, view);
         MenuInflater inflater = popupMenu.getMenuInflater();
@@ -135,24 +137,24 @@ public class MainActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
         }
-        super.onBackPressed();
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
 
-        mSearchView = (SearchView) menu.findItem(R.id.search).getActionView();
-        mSearchView.setOnQueryTextListener(this);
-        mSearchView.setOnCloseListener(new SearchView.OnCloseListener() {
+        SearchView searchView = (SearchView) menu.findItem(R.id.search).getActionView();
+        searchView.setOnQueryTextListener(this);
+        searchView.setOnCloseListener(new SearchView.OnCloseListener() {
             @Override
             public boolean onClose() {
                 mAdapter.getFilter().filter(null);
                 return false;
             }
         });
-
         return true;
     }
 
