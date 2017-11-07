@@ -4,9 +4,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    app:layout_scrollFlags="scroll|enterAlways"
     tools:context=".MainActivity">
 
     <android.support.design.widget.AppBarLayout
+        android:id="@+id/app_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:theme="@style/AppTheme.AppBarOverlay">
@@ -61,12 +63,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="54dp"
-        android:drawSelectorOnTop="false"
         android:fadeScrollbars="true"
         android:fastScrollAlwaysVisible="true"
         android:fastScrollEnabled="true"
-        android:padding="@dimen/activity_all_padding"
-        android:scrollbarStyle="outsideOverlay" />
+        android:padding="@dimen/activity_all_padding" />
 
 
     <android.support.design.widget.FloatingActionButton
