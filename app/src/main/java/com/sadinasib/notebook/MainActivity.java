@@ -3,10 +3,7 @@ package com.sadinasib.notebook;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.LoaderManager;
-import android.content.ClipData;
-import android.content.ClipboardManager;
 import android.content.ContentUris;
-import android.content.Context;
 import android.content.CursorLoader;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -14,6 +11,7 @@ import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -37,6 +35,15 @@ import android.widget.SearchView;
 import android.widget.Toast;
 
 import com.sadinasib.notebook.adapter.NotebookAdapter;
+
+import java.io.File;
+import java.util.Locale;
+
+import jxl.Workbook;
+import jxl.WorkbookSettings;
+import jxl.write.Label;
+import jxl.write.WritableSheet;
+import jxl.write.WritableWorkbook;
 
 import static com.sadinasib.notebook.data.NotebookContract.NotebookEntry;
 
@@ -216,7 +223,11 @@ public class MainActivity
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
         switch (id) {
+            case R.id.nav_export:
+                exportDbToExcel();
+                break;
             case R.id.nav_share:
+                exportDbToExcel();
                 break;
             case R.id.nav_send:
                 break;
@@ -300,5 +311,56 @@ public class MainActivity
                 null,
                 null);
         return cursor;
+    }
+
+    public void exportDbToExcel() {
+        final Cursor cursor = getContentResolver().query(
+                NotebookEntry.CONTENT_URI,
+                new String[]{NotebookEntry.COLUMN_WORD, NotebookEntry.COLUMN_TRANSLATION},
+                null,
+                null,
+                NotebookEntry.SORT_ORDER
+        );
+
+        File sd = new File(Environment.getExternalStorageDirectory() + "/Notebook");
+        String csvFile = "NotebookData.xls";
+        File directory = new File(sd.getAbsolutePath());
+        if (!directory.isDirectory()) {
+            //noinspection ResultOfMethodCallIgnored
+            directory.mkdirs();
+        }
+        try {
+            File file = new File(directory, csvFile);
+            WorkbookSettings wbSettings = new WorkbookSettings();
+            wbSettings.setLocale(new Locale("en", "EN"));
+            WritableWorkbook workbook;
+            workbook = Workbook.createWorkbook(file, wbSettings);
+            //Excel sheet name
+            WritableSheet sheet = workbook.createSheet("words", 0);
+            //Column and row
+            sheet.addCell(new Label(0, 0, "Word"));
+            sheet.addCell(new Label(1, 0, "Translation"));
+
+            if (cursor != null && cursor.moveToFirst()) {
+                do {
+                    String word = cursor.getString(cursor.getColumnIndex(NotebookEntry.COLUMN_WORD));
+                    String trans = cursor.getString(cursor.getColumnIndex(NotebookEntry.COLUMN_TRANSLATION));
+
+                    int i = cursor.getPosition() + 1;
+                    sheet.addCell(new Label(0, i, word));
+                    sheet.addCell(new Label(1, i, trans));
+                } while (cursor.moveToNext());
+                //closing cursor
+                cursor.close();
+                workbook.write();
+                workbook.close();
+                Toast.makeText(getApplication(), "File exported successfully to " + directory.toString(), Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this, "You have no words to export", Toast.LENGTH_SHORT).show();
+            }
+        } catch (Exception e) {
+            Toast.makeText(this, "Exporting file failed", Toast.LENGTH_SHORT).show();
+            e.printStackTrace();
+        }
     }
 }

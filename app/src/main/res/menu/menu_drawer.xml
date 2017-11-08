@@ -10,6 +10,20 @@
             android:title="@string/menu_drawer_tools" />
     </group>
 
+    <item android:title="@string/menu_drawer_file">
+        <menu>
+            <item
+                android:id="@+id/nav_import"
+                android:icon="@drawable/ic_file_download"
+                android:title="@string/menu_drawer_import" />
+            <item
+                android:id="@+id/nav_export"
+                android:icon="@drawable/ic_file_upload"
+                android:title="@string/menu_drawer_export" />
+
+        </menu>
+    </item>
+
     <item android:title="@string/menu_drawer_communicate">
         <menu>
             <item

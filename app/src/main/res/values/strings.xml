@@ -56,4 +56,7 @@
     <string name="alphabet"> ABCDEFGHIJKLMNOPQRSTUVWXYZ</string>
     <string name="search_title">Search</string>
     <string name="search_hint">Search word</string>
+    <string name="menu_drawer_file">File</string>
+    <string name="menu_drawer_export">Export</string>
+    <string name="menu_drawer_import">Import</string>
 </resources>
