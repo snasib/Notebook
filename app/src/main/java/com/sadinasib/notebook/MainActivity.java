@@ -1,9 +1,12 @@
 package com.sadinasib.notebook;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.LoaderManager;
+import android.content.ActivityNotFoundException;
 import android.content.ContentUris;
+import android.content.ContentValues;
 import android.content.CursorLoader;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -36,7 +39,16 @@ import android.widget.Toast;
 
 import com.sadinasib.notebook.adapter.NotebookAdapter;
 
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Row;
+
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Iterator;
 import java.util.Locale;
 
 import jxl.Workbook;
@@ -57,7 +69,6 @@ public class MainActivity
     private static final int INVENTORY_LOADER_ID = 35;
 
     private NotebookAdapter mAdapter;
-    private ListView mListView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,7 +95,7 @@ public class MainActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        mListView = (ListView) findViewById(R.id.listView);
+        ListView mListView = (ListView) findViewById(R.id.listView);
         View emptyView = findViewById(R.id.empty_view);
         mListView.setEmptyView(emptyView);
         mAdapter = new NotebookAdapter(this, null);
@@ -226,16 +237,78 @@ public class MainActivity
             case R.id.nav_export:
                 exportDbToExcel();
                 break;
+            case R.id.nav_import:
+                startImportIntent();
+                break;
             case R.id.nav_share:
                 exportDbToExcel();
                 break;
             case R.id.nav_send:
                 break;
         }
-
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    private void startImportIntent() {
+        Log.i(TAG, "startImportIntent");
+        Intent fileIntent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+        fileIntent.addCategory(Intent.CATEGORY_OPENABLE);
+        fileIntent.setType("application/vnd.ms-excel");
+        try {
+            startActivityForResult(fileIntent, 12);
+        } catch (ActivityNotFoundException e) {
+            Toast.makeText(this, "Impossible to start import process", Toast.LENGTH_SHORT).show();
+            e.printStackTrace();
+        }
+    }
+
+    @SuppressWarnings("ConstantConditions")
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Log.i(TAG, "onActivityResult: with request code " + requestCode);
+        if (requestCode == 12 && resultCode == Activity.RESULT_OK) {
+            Uri uri = null;
+            HSSFWorkbook workbook = null;
+            InputStream inputStream = null;
+            if (data != null) {
+                uri = data.getData();
+                try {
+                    inputStream = getContentResolver().openInputStream(uri);
+                } catch (FileNotFoundException e) {
+                    Toast.makeText(this, "File not found", Toast.LENGTH_SHORT).show();
+                    Log.e(TAG, "onActivityResult: " + e.getLocalizedMessage());
+                    e.printStackTrace();
+                }
+                try {
+                    workbook = new HSSFWorkbook(inputStream);
+                } catch (IOException e) {
+                    Toast.makeText(this, "File not supported. Please choose file with .xls format", Toast.LENGTH_SHORT).show();
+                    Log.e(TAG, "onActivityResult: " + e.getLocalizedMessage());
+                    e.printStackTrace();
+                }
+                HSSFSheet sheet = workbook.getSheetAt(0);
+                importExcelToDb(sheet);
+            }
+            super.onActivityResult(requestCode, resultCode, data);
+        }
+    }
+
+    private void importExcelToDb(HSSFSheet sheet) {
+        HSSFRow row;
+        Iterator<Row> iterator = sheet.rowIterator();
+        while (iterator.hasNext()) {
+            row = (HSSFRow) iterator.next();
+            if (row.getCell(0) != null
+                    && row.getCell(1) != null) {
+                ContentValues contentValues = new ContentValues();
+                contentValues.put(NotebookEntry.COLUMN_WORD, row.getCell(0).getStringCellValue());
+                contentValues.put(NotebookEntry.COLUMN_TRANSLATION, row.getCell(1).getStringCellValue());
+                getContentResolver().insert(NotebookEntry.CONTENT_URI, contentValues);
+            }
+        }
+        Toast.makeText(this, "File imported", Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -313,7 +386,7 @@ public class MainActivity
         return cursor;
     }
 
-    public void exportDbToExcel() {
+    private void exportDbToExcel() {
         final Cursor cursor = getContentResolver().query(
                 NotebookEntry.CONTENT_URI,
                 new String[]{NotebookEntry.COLUMN_WORD, NotebookEntry.COLUMN_TRANSLATION},
