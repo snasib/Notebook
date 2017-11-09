@@ -322,6 +322,11 @@ public class MainActivity
                 NotebookEntry.SORT_ORDER
         );
 
+        if (cursor == null || cursor.getCount() < 1) {
+            Toast.makeText(this, "You have no words to export", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         File sd = new File(Environment.getExternalStorageDirectory() + "/Notebook");
         String csvFile = "NotebookData.xls";
         File directory = new File(sd.getAbsolutePath());
@@ -341,7 +346,7 @@ public class MainActivity
             sheet.addCell(new Label(0, 0, "Word"));
             sheet.addCell(new Label(1, 0, "Translation"));
 
-            if (cursor != null && cursor.moveToFirst()) {
+            if (cursor.moveToFirst()) {
                 do {
                     String word = cursor.getString(cursor.getColumnIndex(NotebookEntry.COLUMN_WORD));
                     String trans = cursor.getString(cursor.getColumnIndex(NotebookEntry.COLUMN_TRANSLATION));
@@ -355,8 +360,6 @@ public class MainActivity
                 workbook.write();
                 workbook.close();
                 Toast.makeText(getApplication(), "File exported successfully to " + directory.toString(), Toast.LENGTH_SHORT).show();
-            } else {
-                Toast.makeText(this, "You have no words to export", Toast.LENGTH_SHORT).show();
             }
         } catch (Exception e) {
             Toast.makeText(this, "Exporting file failed", Toast.LENGTH_SHORT).show();
