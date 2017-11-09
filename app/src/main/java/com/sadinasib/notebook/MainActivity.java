@@ -303,9 +303,13 @@ public class MainActivity
             if (row.getCell(0) != null
                     && row.getCell(1) != null) {
                 ContentValues contentValues = new ContentValues();
-                contentValues.put(NotebookEntry.COLUMN_WORD, row.getCell(0).getStringCellValue());
-                contentValues.put(NotebookEntry.COLUMN_TRANSLATION, row.getCell(1).getStringCellValue());
-                getContentResolver().insert(NotebookEntry.CONTENT_URI, contentValues);
+                String word = row.getCell(0).getStringCellValue();
+                String trans = row.getCell(1).getStringCellValue();
+                if (!isExist(word, trans)) {
+                    contentValues.put(NotebookEntry.COLUMN_WORD, word);
+                    contentValues.put(NotebookEntry.COLUMN_TRANSLATION, trans);
+                    getContentResolver().insert(NotebookEntry.CONTENT_URI, contentValues);
+                }
             }
         }
         Toast.makeText(this, "File imported", Toast.LENGTH_SHORT).show();
@@ -438,5 +442,20 @@ public class MainActivity
             Toast.makeText(this, "Exporting file failed", Toast.LENGTH_SHORT).show();
             e.printStackTrace();
         }
+    }
+
+    private boolean isExist(String word, String trans) {
+        String[] projection = {NotebookEntry._ID};
+        String selection = NotebookEntry.COLUMN_WORD + "=? OR " + NotebookEntry.COLUMN_TRANSLATION + " =?";
+        String[] selectionArgs = new String[]{word, trans};
+        @SuppressLint("Recycle")
+        Cursor cursor = getContentResolver().query(
+                NotebookEntry.CONTENT_URI,
+                projection,
+                selection,
+                selectionArgs,
+                null
+        );
+        return cursor != null && cursor.getCount() > 0;
     }
 }
