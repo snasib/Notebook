@@ -298,6 +298,7 @@ public class MainActivity
     private void importExcelToDb(HSSFSheet sheet) {
         HSSFRow row;
         Iterator<Row> iterator = sheet.rowIterator();
+        int counter = 0;
         while (iterator.hasNext()) {
             row = (HSSFRow) iterator.next();
             if (row.getCell(0) != null
@@ -309,10 +310,12 @@ public class MainActivity
                     contentValues.put(NotebookEntry.COLUMN_WORD, word);
                     contentValues.put(NotebookEntry.COLUMN_TRANSLATION, trans);
                     getContentResolver().insert(NotebookEntry.CONTENT_URI, contentValues);
+                    counter ++;
                 }
             }
         }
-        Toast.makeText(this, "File imported", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, counter+ " word(s)" +
+                " imported", Toast.LENGTH_SHORT).show();
     }
 
     @Override
