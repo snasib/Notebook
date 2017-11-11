@@ -57,6 +57,7 @@ import jxl.write.Label;
 import jxl.write.WritableSheet;
 import jxl.write.WritableWorkbook;
 
+import static android.content.Intent.*;
 import static com.sadinasib.notebook.data.NotebookContract.NotebookEntry;
 
 public class MainActivity
@@ -244,10 +245,8 @@ public class MainActivity
             case R.id.nav_import:
                 startImportIntent();
                 break;
-            case R.id.nav_share:
-                exportDbToExcel();
-                break;
             case R.id.nav_send:
+                sendExportedFile();
                 break;
         }
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -255,10 +254,25 @@ public class MainActivity
         return true;
     }
 
+    private void sendExportedFile() {
+        Log.i(TAG, "shareExportedFile");
+        exportDbToExcel();
+        File sd = new File(Environment.getExternalStorageDirectory() + "/Notebook");
+        File file = new File(sd.getAbsolutePath());
+        if (file.exists()) {
+            Intent sendIntent = new Intent();
+            sendIntent.setAction(Intent.ACTION_SEND);
+            sendIntent.setType("application/vnd.ms-excel");
+            startActivity(sendIntent);
+        } else {
+            Toast.makeText(this, "Send failed", Toast.LENGTH_SHORT).show();
+        }
+    }
+
     private void startImportIntent() {
         Log.i(TAG, "startImportIntent");
-        Intent fileIntent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
-        fileIntent.addCategory(Intent.CATEGORY_OPENABLE);
+        Intent fileIntent = new Intent(ACTION_OPEN_DOCUMENT);
+        fileIntent.addCategory(CATEGORY_OPENABLE);
         fileIntent.setType("application/vnd.ms-excel");
         try {
             startActivityForResult(fileIntent, 12);
