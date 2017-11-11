@@ -142,8 +142,6 @@ public class MainActivity
                     case R.id.action_popup_delete:
                         deleteSingleWord(currentProductUri);
                         return true;
-                    case R.id.action_popup_share:
-                        return true;
                 }
                 return false;
             }
@@ -187,8 +185,6 @@ public class MainActivity
                 return true;
             case R.id.action_delete_all:
                 deleteAllWords();
-                return true;
-            case R.id.action_settings:
                 return true;
         }
         return super.onOptionsItemSelected(item);
