@@ -268,12 +268,13 @@ public class MainActivity
     private void sendExportedFile() {
         Log.i(TAG, "shareExportedFile");
         exportDbToExcel();
-        File sd = new File(Environment.getExternalStorageDirectory() + "/Notebook");
-        File file = new File(sd.getAbsolutePath());
+        File file = new File(Environment.getExternalStorageDirectory() + "/Notebook/NotebookData.xls").getAbsoluteFile();
+        Log.i(TAG, "sendExportedFile: " + file);
         if (file.exists()) {
             Intent sendIntent = new Intent();
             sendIntent.setAction(Intent.ACTION_SEND);
             sendIntent.setType("application/vnd.ms-excel");
+            sendIntent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(file));
             startActivity(sendIntent);
         } else {
             Toast.makeText(this, "Send failed", Toast.LENGTH_SHORT).show();
