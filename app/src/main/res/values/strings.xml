@@ -60,4 +60,10 @@
     <string name="menu_drawer_export">Export</string>
     <string name="menu_drawer_import">Import</string>
     <string name="main_activity_file_not_exist">File doesn\'t exist</string>
+    <string name="question_add_words_before_quiz">You need to add at least two words to start</string>
+    <string name="question_no_quiz_with_empty_list">Quiz cannot be started</string>
+    <string name="menu_drawer_quiz">Start Quiz</string>
+    <string name="you_need_more_than_2_words_to_start_quiz">You need more than 2 words to start quiz</string>
+    <string name="quiz_activity_congrats_right_answer">Congratulation. That was right</string>
+    <string name="quiz_activity_sorry_wrong_answer">Sorry. That was wrong</string>
 </resources>

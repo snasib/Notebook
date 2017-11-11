@@ -234,6 +234,10 @@ public class MainActivity
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
         switch (id) {
+            case R.id.nav_quiz:
+                Intent intent = new Intent(MainActivity.this, QuizActivity.class);
+                startActivity(intent);
+                break;
             case R.id.nav_export:
                 exportDbToExcel();
                 break;
