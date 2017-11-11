@@ -86,7 +86,7 @@ public class NotebookAdapter
             @Override
             public void onInit(int status) {
                 if (status == TextToSpeech.SUCCESS) {
-                    int result = mTextToSpeech.setLanguage(Locale.getDefault());
+                    int result = mTextToSpeech.setLanguage(Locale.US);
                     if (result == TextToSpeech.LANG_MISSING_DATA
                             || result == TextToSpeech.LANG_NOT_SUPPORTED) {
                         Log.e(TAG, " speak onInit: Language is not supported");
