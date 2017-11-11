@@ -8,8 +8,4 @@
     <item
         android:id="@+id/action_popup_delete"
         android:title="@string/action_popup_delete" />
-
-    <item
-        android:id="@+id/action_popup_share"
-        android:title="@string/action_popup_share" />
 </menu>
