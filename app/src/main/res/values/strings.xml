@@ -66,4 +66,5 @@
     <string name="you_need_more_than_2_words_to_start_quiz">You need more than 2 words to start quiz</string>
     <string name="quiz_activity_congrats_right_answer">Congratulation. That was right</string>
     <string name="quiz_activity_sorry_wrong_answer">Sorry. That was wrong</string>
+    <string name="action_popup_copy">Copy</string>
 </resources>

@@ -5,8 +5,11 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.LoaderManager;
 import android.content.ActivityNotFoundException;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.ContentUris;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.CursorLoader;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -35,6 +38,7 @@ import android.widget.FilterQueryProvider;
 import android.widget.ListView;
 import android.widget.PopupMenu;
 import android.widget.SearchView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.sadinasib.notebook.adapter.NotebookAdapter;
@@ -67,7 +71,8 @@ public class MainActivity
         , AdapterView.OnItemLongClickListener
         , SearchView.OnQueryTextListener, FilterQueryProvider {
     private static final String TAG = MainActivity.class.getSimpleName();
-    private static final int INVENTORY_LOADER_ID = 35;
+    private static final int NOTEBOOK_LOADER_ID = 35;
+    private static final int IMPORT_INTENT_REQUEST_CODE = 12;
 
     private NotebookAdapter mAdapter;
 
@@ -120,12 +125,12 @@ public class MainActivity
             }
         });
 
-        getLoaderManager().initLoader(INVENTORY_LOADER_ID, null, this);
+        getLoaderManager().initLoader(NOTEBOOK_LOADER_ID, null, this);
     }
 
     private void showPopup(final View view, final long id) {
         Log.i(TAG, "showPopup");
-        PopupMenu popupMenu = new PopupMenu(this, view);
+        final PopupMenu popupMenu = new PopupMenu(this, view);
         MenuInflater inflater = popupMenu.getMenuInflater();
         inflater.inflate(R.menu.menu_popup, popupMenu.getMenu());
         final Uri currentProductUri = ContentUris.withAppendedId(NotebookEntry.CONTENT_URI, id);
@@ -141,6 +146,16 @@ public class MainActivity
                         return true;
                     case R.id.action_popup_delete:
                         deleteSingleWord(currentProductUri);
+                        return true;
+                    case R.id.action_popup_copy:
+                        ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+                        ClipData clipData = ClipData.newPlainText("simple text", ((TextView) view).getText());
+                        if (clipboard != null) {
+                            clipboard.setPrimaryClip(clipData);
+                            Toast.makeText(MainActivity.this, "Text copied to clipboard", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(MainActivity.this, "Copy failed", Toast.LENGTH_SHORT).show();
+                        }
                         return true;
                 }
                 return false;
@@ -271,7 +286,7 @@ public class MainActivity
         fileIntent.addCategory(CATEGORY_OPENABLE);
         fileIntent.setType("application/vnd.ms-excel");
         try {
-            startActivityForResult(fileIntent, 12);
+            startActivityForResult(fileIntent, IMPORT_INTENT_REQUEST_CODE);
         } catch (ActivityNotFoundException e) {
             Toast.makeText(this, "Impossible to start import process", Toast.LENGTH_SHORT).show();
             e.printStackTrace();
@@ -282,7 +297,8 @@ public class MainActivity
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         Log.i(TAG, "onActivityResult: with request code " + requestCode);
-        if (requestCode == 12 && resultCode == Activity.RESULT_OK) {
+        if (requestCode == IMPORT_INTENT_REQUEST_CODE
+                && resultCode == Activity.RESULT_OK) {
             Uri uri = null;
             HSSFWorkbook workbook = null;
             InputStream inputStream = null;

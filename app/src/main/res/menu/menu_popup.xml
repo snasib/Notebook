@@ -6,6 +6,10 @@
         android:title="@string/action_popup_edit" />
 
     <item
+        android:id="@+id/action_popup_copy"
+        android:title="@string/action_popup_copy" />
+
+    <item
         android:id="@+id/action_popup_delete"
         android:title="@string/action_popup_delete" />
 </menu>
